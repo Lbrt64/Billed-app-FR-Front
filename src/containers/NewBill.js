@@ -1,5 +1,6 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
+import { isImage } from "../app/utils.js"
 
 export default class NewBill {
   constructor({ document, onNavigate, store, localStorage }) {
@@ -15,17 +16,23 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
-    formData.append('email', email)
-
-    this.store
+    // Only accept jpg, jpeg and png
+    if (!isImage(fileName)) {
+      alert('Format de fichier non accepté, utiliser .jpg, .jpeg ou .png')
+      this.document.querySelector(`input[data-testid="file"]`).value = '';
+      return
+    } else {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('email', email)
+      this.store
       .bills()
       .create({
         data: formData,
@@ -39,10 +46,11 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+    }
   }
+
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
@@ -63,6 +71,8 @@ export default class NewBill {
 
   // not need to cover this function by tests
   updateBill = (bill) => {
+    console.log(bill.fileName)
+    console.log(isImage(bill.fileName))
     if (this.store) {
       this.store
       .bills()

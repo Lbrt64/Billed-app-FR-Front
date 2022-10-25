@@ -2,6 +2,7 @@ import VerticalLayout from './VerticalLayout.js'
 
 export default () => {
 
+  // added "accept=".png,.jpg,.jpeg" for the file input to restrict upload of other file formats
   return (`
     <div class='layout'>
       ${VerticalLayout(120)}
@@ -55,7 +56,7 @@ export default () => {
                   </div>
                   <div class="col-half">
                     <label for="file" class="bold-label">Justificatif</label>
-                    <input required type="file" class="form-control blue-border" data-testid="file" />
+                    <input required type="file" class="form-control blue-border" data-testid="file" accept=".png,.jpg,.jpeg" />
                   </div>
                 </div>
             </div>
