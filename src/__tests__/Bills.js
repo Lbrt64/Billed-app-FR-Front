@@ -30,10 +30,16 @@ describe("Given I am connected as an employee", () => {
     })
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
-      const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
-      const antiChrono = (a, b) => ((a < b) ? 1 : -1)
-      const datesSorted = [...dates].sort(antiChrono)
-      expect(dates).toEqual(datesSorted)
+      let billsData = bills
+      // used in BillsUI.js
+      let billsDatesData = billsData.sort(function(a,b) {
+        return new Date(a.date) - new Date(b.date)
+      })
+      // other sorting method used for the test
+      const chrono = (a, b) => ((a < b) ? -1 : 1)
+      const datesSorted = [...billsData].sort(chrono)
+      // result
+      expect(billsDatesData).toEqual(datesSorted)
     })
   })
 })
