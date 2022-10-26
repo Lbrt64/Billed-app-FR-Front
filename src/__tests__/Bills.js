@@ -5,6 +5,7 @@
 import {screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
+import { chronoOrderedBills } from "../fixtures/chronoOrderedBills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
@@ -31,15 +32,12 @@ describe("Given I am connected as an employee", () => {
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       let billsData = bills
-      // used in BillsUI.js
-      let billsDatesData = billsData.sort(function(a,b) {
+      // same approach used in BillsUI.js
+      let orderedBills = billsData.sort(function(a,b) {
         return new Date(a.date) - new Date(b.date)
       })
-      // other sorting method used for the test
-      const chrono = (a, b) => ((a < b) ? -1 : 1)
-      const datesSorted = [...billsData].sort(chrono)
-      // result
-      expect(billsDatesData).toEqual(datesSorted)
+      // compare bills that have been ordered by function to a list of bills that are already ordered
+      expect(orderedBills).toEqual(chronoOrderedBills)
     })
   })
 })
