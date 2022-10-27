@@ -2,14 +2,18 @@
  * @jest-environment jsdom
  */
 
-import {screen, waitFor} from "@testing-library/dom"
+import {fireEvent, screen, waitFor} from "@testing-library/dom"
+import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { chronoOrderedBills } from "../fixtures/chronoOrderedBills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
+import Bills from "../containers/Bills.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
-
+import mockStore from "../__mocks__/store"
 import router from "../app/Router.js";
+
+jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -38,6 +42,29 @@ describe("Given I am connected as an employee", () => {
       })
       // compare bills that have been ordered by function to a list of bills that are already ordered
       expect(orderedBills).toEqual(chronoOrderedBills)
+    })
+  })
+  describe("When I click on the eye icon for a bill", () => {
+    test('A modal should open', () => {
+      Object.defineProperty(window, localStorage, { value: localStorageMock });
+      window.localStorage.setItem("user", JSON.stringify({
+         type: "Employee" 
+      }))
+      const store = null
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html;
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      new Bills({document, onNavigate, localStorageMock, store})
+      const handleClickIconEye = jest.fn();
+      // jQuery-Bootstrap Function
+      $.fn.modal = jest.fn();
+      const eye = screen.getAllByTestId('icon-eye')[0]
+      eye.addEventListener('click', handleClickIconEye)
+      userEvent.click(eye)
+      // expect(handleClickIconEye).toHaveBeenCalled()
+      expect($.fn.modal).toHaveBeenCalled()
     })
   })
 })
