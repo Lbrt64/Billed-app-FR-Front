@@ -54,12 +54,11 @@ describe("Given I am connected as an employee", () => {
       window.localStorage.setItem("user", JSON.stringify({
          type: "Employee" 
       }))
-      const store = null
-      const html = BillsUI({ data: bills })
-      document.body.innerHTML = html;
+      document.body.innerHTML = BillsUI({ data: bills });
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
+      const store = null
       new Bills({document, onNavigate, localStorageMock, store})
       const handleClickIconEye = jest.fn();
       // jQuery-Bootstrap Function
@@ -67,8 +66,7 @@ describe("Given I am connected as an employee", () => {
       const eye = screen.getAllByTestId('icon-eye')[0]
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
-      // expect(handleClickIconEye).toHaveBeenCalled()
-      expect($.fn.modal).toHaveBeenCalled()
+      expect(screen.getByTestId("modaleFile")).toBeTruthy()
     })
   })
 
@@ -87,11 +85,9 @@ describe("Given I am connected as an employee", () => {
       }
       new Bills({document, onNavigate, localStorageMock, store})
       const handleClickNewBill = jest.fn();
-      // jQuery-Bootstrap Function
       const newBillButton = screen.getByTestId('btn-new-bill')
       newBillButton.addEventListener('click', handleClickNewBill)
       userEvent.click(newBillButton)
-      // expect(handleClickIconEye).toHaveBeenCalled()
       expect(screen.getByTestId("form-new-bill")).toBeTruthy()
     })
   })
