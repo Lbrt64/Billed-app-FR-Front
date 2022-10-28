@@ -1,10 +1,12 @@
 import VerticalLayout from './VerticalLayout.js'
 import ErrorPage from "./ErrorPage.js"
 import LoadingPage from "./LoadingPage.js"
+// Fix [Bug report] - Bills - import formatting for bills data
 import { formatStatus, formatDate } from "../app/format.js"
 
 import Actions from './Actions.js'
 
+// Fix [Bug report] - Bills - do data formatting only when it's displayed on the page
 const row = (bill) => {
   return (`
     <tr>
@@ -21,6 +23,7 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
+  // Fix [Bug report] - Bills - add data sorting before display
   data = data.sort(function(a,b) {
     return new Date(a.date) - new Date(b.date)
   })

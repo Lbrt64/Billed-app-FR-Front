@@ -16,9 +16,9 @@ import router from "../app/Router.js";
 jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
+
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -30,20 +30,24 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
-      // to-do write expect expression
+      // [Ajout de tests unitaires et d'intégration] - Bills
       expect(windowIcon.classList.contains('active-icon')).toBe(true)
     })
+    // Fix [Bug report] - Bills - Note: the test was using antichrono order, but was changed to use chrono
+    // "Should be ordered from EARLIEST to LATEST"
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
-      let billsData = bills
       // same approach used in BillsUI.js
+      let billsData = bills
       let orderedBills = billsData.sort(function(a,b) {
         return new Date(a.date) - new Date(b.date)
       })
-      // compare bills that have been ordered by function to a list of bills that are already ordered
+      // compare results to list of already ordered bills
       expect(orderedBills).toEqual(chronoOrderedBills)
     })
   })
+
+  // [Ajout de tests unitaires et d'intégration] - Bills
   describe("When I click on the eye icon for a bill", () => {
     test('Then a modal should open', () => {
       Object.defineProperty(window, localStorage, { value: localStorageMock });
@@ -67,6 +71,8 @@ describe("Given I am connected as an employee", () => {
       expect($.fn.modal).toHaveBeenCalled()
     })
   })
+
+  // [Ajout de tests unitaires et d'intégration] - Bills
   describe("When I click on new bill icon", () => {
     test('Then new bill form should be displayed', () => {
       Object.defineProperty(window, localStorage, { value: localStorageMock });
@@ -89,11 +95,10 @@ describe("Given I am connected as an employee", () => {
       expect(screen.getByTestId("form-new-bill")).toBeTruthy()
     })
   })
-})
 
-describe("Given I am a user connected as Employee", () => {
-  describe("When I navigate to Bills Page", () => {
-    test("Then fetch bills from mock API GET", async () => {
+  // [Ajout de tests unitaires et d'intégration] - Bills GET API positive scenario
+  describe("When I load the Bills Page and data received from GET Bills API is correct", () => {
+    test("Then bills data should be displayed on the Bills page", async () => {
       Object.defineProperty(window, localStorage, { value: localStorageMock });
       window.localStorage.setItem("user", JSON.stringify({
          type: "Employee" 
@@ -113,51 +118,60 @@ describe("Given I am a user connected as Employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       expect(screen.getByTestId("tbody")).toBeTruthy()
     })
-    describe("When an error occurs on API", () => {
-      beforeEach(() => {
-        jest.spyOn(mockStore, "bills")
-        Object.defineProperty(
-            window,
-            'localStorage',
-            { value: localStorageMock }
-        )
-        window.localStorage.setItem('user', JSON.stringify({
-          type: 'Employee',
-          email: "a@a"
-        }))
-        const root = document.createElement("div")
-        root.setAttribute("id", "root")
-        document.body.appendChild(root)
-        router()
-      })
-      test("Then fetch bills from an API and fails with 404 message error", async () => {
-
-        mockStore.bills.mockImplementationOnce(() => {
-          return {
-            list : () =>  {
-              return Promise.reject(new Error("Erreur 404"))
-            }
-          }})
-        window.onNavigate(ROUTES_PATH.Bills)
-        await new Promise(process.nextTick);
-        const message = await screen.getByText(/Erreur 404/)
-        expect(message).toBeTruthy()
-      })
-
-      test("Then fetch messages from an API and fails with 500 message error", async () => {
-
-        mockStore.bills.mockImplementationOnce(() => {
-          return {
-            list : () =>  {
-              return Promise.reject(new Error("Erreur 500"))
-            }
-          }})
-
-        window.onNavigate(ROUTES_PATH.Bills)
-        await new Promise(process.nextTick);
-        const message = await screen.getByText(/Erreur 500/)
-        expect(message).toBeTruthy()
-      })
-    })
   })
+
+  // [Ajout de tests unitaires et d'intégration] - Bills GET API error scenario
+  describe("When I load the Bills Page and an error occurs on GET Bills API", () => {
+
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills")
+      Object.defineProperty(
+          window,
+          'localStorage',
+          { value: localStorageMock }
+      )
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee',
+        email: "a@a"
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.appendChild(root)
+      router()
+    })
+
+    test("Then in case of API 404 error, the page should display it", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list : () =>  {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+        }})
+      window.onNavigate(ROUTES_PATH.Bills)
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+    })
+
+    test("Then in case of API 500 error, the page should display it", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list : () =>  {
+            return Promise.reject(new Error("Erreur 500"))
+          }
+        }})
+
+      window.onNavigate(ROUTES_PATH.Bills)
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+    })
+
+  })
+
+
 })
+
+// [Ajout de tests unitaires et d'intégration] - Bills GET API
+// describe("Given I am a user connected as Employee", () => {
+// })

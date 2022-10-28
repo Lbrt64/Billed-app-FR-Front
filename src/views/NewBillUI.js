@@ -1,7 +1,7 @@
 import VerticalLayout from './VerticalLayout.js'
 
 export default () => {
-
+  // [Bug Hunt] - Bills
   // added "accept=".png,.jpg,.jpeg" for the file input to restrict upload of other file formats
   return (`
     <div class='layout'>

@@ -37,6 +37,7 @@ export default class {
             try {
               return {
                 ...doc,
+                // Fix [Bug report] - Bills - moved data formatting to BillsUI view
                 date: doc.date,
                 status: doc.status
               }

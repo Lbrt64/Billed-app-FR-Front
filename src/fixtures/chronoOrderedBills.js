@@ -1,3 +1,4 @@
+// Fix [Bug report] - Bills - added this mocked data for the bills sorting test in Bills
 export const chronoOrderedBills = [{
     "id": "BeKy5Mo4jkmdfPGYpTxZ",
     "vat": "",

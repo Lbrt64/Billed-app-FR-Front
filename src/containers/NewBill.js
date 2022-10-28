@@ -1,5 +1,6 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
+// [Bug Hunt] - Bills
 import { isImage } from "../app/utils.js"
 
 export default class NewBill {
@@ -23,6 +24,7 @@ export default class NewBill {
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const email = JSON.parse(localStorage.getItem("user")).email
+    // [Bug Hunt] - Bills
     // Only accept jpg, jpeg and png
     if (!isImage(fileName)) {
       alert('Format de fichier non accepté, utiliser .jpg, .jpeg ou .png')
@@ -71,8 +73,8 @@ export default class NewBill {
 
   // not need to cover this function by tests
   updateBill = (bill) => {
-    console.log(bill.fileName)
-    console.log(isImage(bill.fileName))
+    // console.log(bill.fileName)
+    // console.log(isImage(bill.fileName))
     if (this.store) {
       this.store
       .bills()
