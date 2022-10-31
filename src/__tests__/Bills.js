@@ -59,11 +59,11 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = ROUTES({ pathname })
       }
       const store = null
-      new Bills({document, onNavigate, localStorageMock, store})
-      const handleClickIconEye = jest.fn();
-      // jQuery-Bootstrap Function
       $.fn.modal = jest.fn();
+      const testBills = new Bills({document, onNavigate, localStorageMock, store})
       const eye = screen.getAllByTestId('icon-eye')[0]
+      const handleClickIconEye = jest.fn(testBills.handleClickIconEye(eye));
+      // jQuery-Bootstrap Function
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
       expect(screen.getByTestId("modaleFile")).toBeTruthy()
@@ -83,8 +83,8 @@ describe("Given I am connected as an employee", () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
-      new Bills({document, onNavigate, localStorageMock, store})
-      const handleClickNewBill = jest.fn();
+      const testBills = new Bills({document, onNavigate, localStorageMock, store})
+      const handleClickNewBill = jest.fn(testBills.handleClickNewBill);
       const newBillButton = screen.getByTestId('btn-new-bill')
       newBillButton.addEventListener('click', handleClickNewBill)
       userEvent.click(newBillButton)
@@ -105,7 +105,7 @@ describe("Given I am connected as an employee", () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
-      new Bills({document, onNavigate, localStorageMock, store})
+      const testBills = new Bills({document, onNavigate, localStorageMock, store})
       localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
       const root = document.createElement("div")
       root.setAttribute("id", "root")
@@ -168,6 +168,3 @@ describe("Given I am connected as an employee", () => {
 
 })
 
-// [Ajout de tests unitaires et d'intégration] - Bills GET API
-// describe("Given I am a user connected as Employee", () => {
-// })

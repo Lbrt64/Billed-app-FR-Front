@@ -18,31 +18,38 @@
 
 // jest.mock("../app/store", () => mockStore)
 
-// describe("Given I am connected as an employee", () => {
-//   describe("When I am on NewBill Page", () => {
-//     test("Then if I upload a png file it should be accepted", () => {
-//       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-//       window.localStorage.setItem('user', JSON.stringify({
-//         type: 'Employee'
-//       }))
-//       const root = document.createElement("div")
-//       root.setAttribute("id", "root")
-//       document.body.append(root)
-//       router()
-//       window.onNavigate(ROUTES_PATH.NewBillUI)
-//       //to-do write assertion
-//       const fileName = "document.png"
-//       const handleSubmit = jest.fn(e)
-//       const fileNameValidation = isImage(fileName)
-//       expect(fileNameValidation).toBeTruthy()
-//     })
-//   })
-// })
-
 // // HandlechangeFile -> simulate file import
 // // if fileName is .png => file.value should be true
 // // if filename is .pdf => file.value should be false
 
 
-// // handleSubmit -> use mocked data & submit 
-// // Should display Bills page
+
+describe("Given I am connected as an employee", () => {
+
+    describe("When I am on new bills form page and load a new file", () => {
+
+        test("Then if it's a png it appears in the form field", async () => {
+        expect()
+        })
+
+        test("Then if it is a pdf, the form field becomes empty", async () => {
+        expect()
+        })
+
+    })
+
+    describe("When I am on new bills form page and submit a bill", () => {
+        
+        test("Then handleSubmit is called", async () => {
+          expect()
+        })
+
+        test("Then I am taken to the Bills page", async () => {
+          expect()
+        })
+
+    })
+})
+
+
+// POST TEST
