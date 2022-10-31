@@ -2,69 +2,60 @@
  * @jest-environment jsdom
  */
 
-import {fireEvent, screen, waitFor} from "@testing-library/dom"
+// import test tools
+import {screen, waitFor} from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
+
+// import views
 import BillsUI from "../views/BillsUI.js"
+
+// import mocked data
 import { bills } from "../fixtures/bills.js"
 import { chronoOrderedBills } from "../fixtures/chronoOrderedBills.js"
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import mockStore from "../__mocks__/store"
+
+// import app logic
 import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import Bills from "../containers/Bills.js";
-import {localStorageMock} from "../__mocks__/localStorage.js";
-import mockStore from "../__mocks__/store"
 import router from "../app/Router.js";
 
+// setup 
 jest.mock("../app/store", () => mockStore)
+const onNavigate = (pathname) => {document.body.innerHTML = ROUTES({ pathname })}
+$.fn.modal = jest.fn();
 
 describe("Given I am connected as an employee", () => {
 
+  beforeEach(() => {
+    // Sets the localstorage information and identify user as employee
+    Object.defineProperty(window, localStorage, { value: localStorageMock });
+    window.localStorage.setItem('user', JSON.stringify({ type: 'Employee', email: "a@a" }))
+    // Requirements to launch router
+    const root = document.createElement("div")
+    root.setAttribute("id", "root")
+    document.body.appendChild(root)
+    // Launch router and generate Bills page
+    router()
+    window.onNavigate(ROUTES_PATH.Bills)
+  })
+
   describe("When I am on Bills Page", () => {
-    test("Then bill icon in vertical layout should be highlighted", async () => {
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.Bills)
-      await waitFor(() => screen.getByTestId('icon-window'))
+
+    test("Then bill icon in vertical layout should be highlighted", () => {
       const windowIcon = screen.getByTestId('icon-window')
-      // [Ajout de tests unitaires et d'intégration] - Bills
       expect(windowIcon.classList.contains('active-icon')).toBe(true)
     })
-    // Fix [Bug report] - Bills - Note: the test was using antichrono order, but was changed to use chrono
-    // "Should be ordered from EARLIEST to LATEST"
+
     test("Then bills should be ordered from earliest to latest", () => {
-      document.body.innerHTML = BillsUI({ data: bills })
-      // same approach used in BillsUI.js
-      let billsData = bills
-      let orderedBills = billsData.sort(function(a,b) {
-        return new Date(a.date) - new Date(b.date)
-      })
-      // compare results to list of already ordered bills
+      let orderedBills = bills.sort(function(a,b) {return new Date(a.date) - new Date(b.date)})
       expect(orderedBills).toEqual(chronoOrderedBills)
     })
   })
 
-  // [Ajout de tests unitaires et d'intégration] - Bills
   describe("When I click on the eye icon for a bill", () => {
     test('Then a modal should open', () => {
-      Object.defineProperty(window, localStorage, { value: localStorageMock });
-      window.localStorage.setItem("user", JSON.stringify({
-         type: "Employee" 
-      }))
-      document.body.innerHTML = BillsUI({ data: bills });
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      const store = null
-      $.fn.modal = jest.fn();
-      const testBills = new Bills({document, onNavigate, localStorageMock, store})
       const eye = screen.getAllByTestId('icon-eye')[0]
-      const handleClickIconEye = jest.fn(testBills.handleClickIconEye(eye));
-      // jQuery-Bootstrap Function
-      eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
       expect(screen.getByTestId("modaleFile")).toBeTruthy()
     })
@@ -73,20 +64,7 @@ describe("Given I am connected as an employee", () => {
   // [Ajout de tests unitaires et d'intégration] - Bills
   describe("When I click on new bill icon", () => {
     test('Then new bill form should be displayed', () => {
-      Object.defineProperty(window, localStorage, { value: localStorageMock });
-      window.localStorage.setItem("user", JSON.stringify({
-         type: "Employee" 
-      }))
-      const store = null
-      const html = BillsUI({ data: bills })
-      document.body.innerHTML = html;
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      const testBills = new Bills({document, onNavigate, localStorageMock, store})
-      const handleClickNewBill = jest.fn(testBills.handleClickNewBill);
       const newBillButton = screen.getByTestId('btn-new-bill')
-      newBillButton.addEventListener('click', handleClickNewBill)
       userEvent.click(newBillButton)
       expect(screen.getByTestId("form-new-bill")).toBeTruthy()
     })
@@ -95,23 +73,6 @@ describe("Given I am connected as an employee", () => {
   // [Ajout de tests unitaires et d'intégration] - Bills GET API positive scenario
   describe("When I load the Bills Page and data received from GET Bills API is correct", () => {
     test("Then bills data should be displayed on the Bills page", async () => {
-      Object.defineProperty(window, localStorage, { value: localStorageMock });
-      window.localStorage.setItem("user", JSON.stringify({
-         type: "Employee" 
-      }))
-      const store = null
-      const html = BillsUI({ data: bills })
-      document.body.innerHTML = html;
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      const testBills = new Bills({document, onNavigate, localStorageMock, store})
-      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
-      router()
-      window.onNavigate(ROUTES_PATH.Bills)
       expect(screen.getByTestId("tbody")).toBeTruthy()
     })
   })
@@ -121,19 +82,6 @@ describe("Given I am connected as an employee", () => {
 
     beforeEach(() => {
       jest.spyOn(mockStore, "bills")
-      Object.defineProperty(
-          window,
-          'localStorage',
-          { value: localStorageMock }
-      )
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee',
-        email: "a@a"
-      }))
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.appendChild(root)
-      router()
     })
 
     test("Then in case of API 404 error, the page should display it", async () => {
