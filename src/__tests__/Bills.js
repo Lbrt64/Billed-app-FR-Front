@@ -13,8 +13,14 @@ import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store"
 
 // import app logic
-import { ROUTES_PATH} from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import router from "../app/Router.js";
+import NewBill from "../containers/NewBill.js"
+import BillsUI from "../views/BillsUI.js";
+
+// import views
+import NewBillUI from "../views/NewBillUI.js"
+
 
 // setup 
 jest.mock("../app/store", () => mockStore)
@@ -66,7 +72,19 @@ describe("Given I am connected as an employee", () => {
   
     // [Ajout de tests unitaires et d'intégration] - Bills GET API positive scenario
     describe("When data received from GET Bills API is correct", () => {
+
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills")
+      })
+
       test("Then bills data should be displayed on the Bills page", async () => {
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            list : () =>  {
+                return Promise.resolve()
+            }
+          }
+        })
         expect(screen.getByTestId("tbody")).toBeTruthy()
       })
     })
@@ -104,8 +122,6 @@ describe("Given I am connected as an employee", () => {
         const message = await screen.getByText(/Erreur 500/)
         expect(message).toBeTruthy()
       })
-  
     })
   })
 })
-

@@ -1,7 +1,9 @@
 {
   "scripts": {
-    "test": "jest --noStackTrace --silent=false",
-    "test-coverage": "jest --coverage --noStackTrace --silent"
+    "test": "jest --noStackTrace --silent",
+    "test-coverage": "jest --coverage --noStackTrace --silent",
+    "test-details": "jest --noStackTrace=false --silent=false"
+
   },
   "jest": {
     "verbose": false,

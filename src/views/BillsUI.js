@@ -24,10 +24,15 @@ const row = (bill) => {
 
 const rows = (data) => {
   // Fix [Bug report] - Bills - add data sorting before display
-  data = data.sort(function(a,b) {
-    return new Date(a.date) - new Date(b.date)
-  })
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  if (data !== undefined) {
+    data = data.sort(function(a,b) {
+      return new Date(a.date) - new Date(b.date)
+    })
+    return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  } else {
+    return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  }
+
 }
 
 export default ({ data: bills, loading, error }) => {
