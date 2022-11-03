@@ -92,7 +92,7 @@ describe('Given I am connected as an employee', () => {
     })
 
     // [Ajout de tests unitaires et d'intégration] - Bills POST API positive scenario
-    describe('When sending the form via POST Bills API with correct data', () => {
+    describe('When sending the form via POST Bills API', () => {
       beforeEach(() => {
         Object.defineProperty(window, localStorage, { value: localStorageMock })
         window.localStorage.setItem('user', JSON.stringify({ type: 'Employee', email: 'a@a' }))
@@ -104,7 +104,7 @@ describe('Given I am connected as an employee', () => {
         jest.spyOn(mockStore, 'bills')
       })
 
-      test('Then the user is taken to the Bills page', async () => {
+      test('Then the user is taken to the Bills page if there is no error', async () => {
         mockStore.bills.mockImplementationOnce(() => {
           return {
             list: () => { return Promise.resolve() },
@@ -115,20 +115,6 @@ describe('Given I am connected as an employee', () => {
         fireEvent.submit(formNewBill)
         await new Promise(process.nextTick)
         expect(screen.getByTestId('tbody')).toBeTruthy()
-      })
-    })
-
-    // [Ajout de tests unitaires et d'intégration] - Bills POST API error scenario
-    describe('When an error occurs on GET Bills API', () => {
-      beforeEach(() => {
-        Object.defineProperty(window, localStorage, { value: localStorageMock })
-        window.localStorage.setItem('user', JSON.stringify({ type: 'Employee', email: 'a@a' }))
-        const root = document.createElement('div')
-        root.setAttribute('id', 'root')
-        document.body.appendChild(root)
-        router()
-        window.onNavigate(ROUTES_PATH.NewBill)
-        jest.spyOn(mockStore, 'bills')
       })
 
       test('Then in case of API 500 error, the page should display it', async () => {
