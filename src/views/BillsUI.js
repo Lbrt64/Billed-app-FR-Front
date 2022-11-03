@@ -1,8 +1,8 @@
 import VerticalLayout from './VerticalLayout.js'
-import ErrorPage from "./ErrorPage.js"
-import LoadingPage from "./LoadingPage.js"
+import ErrorPage from './ErrorPage.js'
+import LoadingPage from './LoadingPage.js'
 // Fix [Bug report] - Bills - import formatting for bills data
-import { formatStatus, formatDate } from "../app/format.js"
+import { formatStatus, formatDate } from '../app/format.js'
 
 import Actions from './Actions.js'
 
@@ -20,23 +20,21 @@ const row = (bill) => {
       </td>
     </tr>
     `)
-  }
+}
 
 const rows = (data) => {
   // Fix [Bug report] - Bills - add data sorting before display
   if (data !== undefined) {
-    data = data.sort(function(a,b) {
+    data = data.sort(function (a, b) {
       return new Date(a.date) - new Date(b.date)
     })
-    return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+    return (data && data.length) ? data.map(bill => row(bill)).join('') : ''
   } else {
-    return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+    return (data && data.length) ? data.map(bill => row(bill)).join('') : ''
   }
-
 }
 
 export default ({ data: bills, loading, error }) => {
-  
   // [Ajout de tests unitaires et d'intégration] - Bills (ajout d'un data-testid)
   const modal = () => (`
     <div class="modal fade" data-testid="modaleFile" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -60,7 +58,7 @@ export default ({ data: bills, loading, error }) => {
   } else if (error) {
     return ErrorPage(error)
   }
-  
+
   return (`
     <div class='layout'>
       ${VerticalLayout(120)}

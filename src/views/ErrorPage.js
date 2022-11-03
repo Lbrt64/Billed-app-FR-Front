@@ -9,7 +9,7 @@ export default (error) => {
           <div class='content-title'> Erreur </div>
         </div>
         <div data-testid="error-message">
-          ${error ? error : ""}
+          ${error || ''}
         </div>
     </div>`
   )

@@ -22,7 +22,6 @@ export const modal = () => (`
   `)
 
 export default (bill) => {
-
   return (`
     <div class="container dashboard-form" data-testid="dashboard-form">
       <div class="row">
@@ -76,12 +75,14 @@ export default (bill) => {
         </div>
       </div>
       <div class="row">
-       ${bill.status === 'pending' ? (`
+       ${bill.status === 'pending'
+? (`
         <div class="col-sm">
           <label for="commentary-admin" class="bold-label">Ajouter un commentaire</label>
           <textarea id="commentary2" class="form-control blue-border" data-testid="commentary2" rows="5"></textarea>
         </div>
-       `) : (`
+       `)
+: (`
         <div class="col-sm">
           <label for="commentary-admin" class="bold-label">Votre commentaire</label>
           <div class='input-field'> ${bill.commentAdmin} </div>
@@ -89,12 +90,14 @@ export default (bill) => {
        `)}
       </div>
       <div class="row">
-      ${bill.status === 'pending' ? (`
+      ${bill.status === 'pending'
+? (`
       <div class="col-sm buttons-flex" style="width: 300px;" >
         <button type="submit" id='btn-refuse-bill' data-testid='btn-refuse-bill-d' class="btn btn-primary">Refuser</button>
         <button type="submit" id='btn-accept-bill' data-testid='btn-accept-bill-d' class="btn btn-primary">Accepter</button>
       </div>
-      `) : ''}
+      `)
+: ''}
     </div>
     ${modal()}
     </div>

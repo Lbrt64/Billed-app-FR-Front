@@ -3,11 +3,11 @@ import DashboardFormUI from '../views/DashboardFormUI.js'
 import BigBilledIcon from '../assets/svg/big_billed.js'
 import { ROUTES_PATH } from '../constants/routes.js'
 import USERS_TEST from '../constants/usersTest.js'
-import Logout from "./Logout.js"
+import Logout from './Logout.js'
 
 export const filteredBills = (data, status) => {
-  return (data && data.length) ?
-    data.filter(bill => {
+  return (data && data.length)
+    ? data.filter(bill => {
       let selectCondition
 
       // in jest environment
@@ -17,7 +17,7 @@ export const filteredBills = (data, status) => {
       /* istanbul ignore next */
       else {
         // in prod environment
-        const userEmail = JSON.parse(localStorage.getItem("user")).email
+        const userEmail = JSON.parse(localStorage.getItem('user')).email
         selectCondition =
           (bill.status === status) &&
           ![...USERS_TEST, userEmail].includes(bill.email)
@@ -29,10 +29,12 @@ export const filteredBills = (data, status) => {
 
 export const card = (bill) => {
   const firstAndLastNames = bill.email.split('@')[0]
-  const firstName = firstAndLastNames.includes('.') ?
-    firstAndLastNames.split('.')[0] : ''
-  const lastName = firstAndLastNames.includes('.') ?
-  firstAndLastNames.split('.')[1] : firstAndLastNames
+  const firstName = firstAndLastNames.includes('.')
+    ? firstAndLastNames.split('.')[0]
+    : ''
+  const lastName = firstAndLastNames.includes('.')
+    ? firstAndLastNames.split('.')[1]
+    : firstAndLastNames
 
   return (`
     <div class='bill-card' id='open-bill${bill.id}' data-testid='open-bill${bill.id}'>
@@ -53,22 +55,22 @@ export const card = (bill) => {
 }
 
 export const cards = (bills) => {
-  return bills && bills.length ? bills.map(bill => card(bill)).join("") : ""
+  return bills && bills.length ? bills.map(bill => card(bill)).join('') : ''
 }
 
 export const getStatus = (index) => {
   switch (index) {
     case 1:
-      return "pending"
+      return 'pending'
     case 2:
-      return "accepted"
+      return 'accepted'
     case 3:
-      return "refused"
+      return 'refused'
   }
 }
 
 export default class {
-  constructor({ document, onNavigate, store, bills, localStorage }) {
+  constructor ({ document, onNavigate, store, bills, localStorage }) {
     this.document = document
     this.onNavigate = onNavigate
     this.store = store
@@ -79,23 +81,22 @@ export default class {
   }
 
   handleClickIconEye = () => {
-    const billUrl = $('#icon-eye-d').attr("data-bill-url")
+    const billUrl = $('#icon-eye-d').attr('data-bill-url')
     const imgWidth = Math.floor($('#modaleFileAdmin1').width() * 0.8)
     // [Bug Hunt] - Bills
     // added overflow:scroll for large files display
-    $('#modaleFileAdmin1').find(".modal-body").html(`<div style='text-align: center; overflow: scroll;'><img width=${imgWidth} src=${billUrl} alt="Bill"/></div>`)
+    $('#modaleFileAdmin1').find('.modal-body').html(`<div style='text-align: center; overflow: scroll;'><img width=${imgWidth} src=${billUrl} alt="Bill"/></div>`)
     if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
   }
 
   // applied to EACH card
-  handleEditTicket(e, bill, bills) {
+  handleEditTicket (e, bill, bills) {
     // console.log('id = ' + this.id)
     // console.log('> count = ' + this.counter)
     if (this.counter === undefined || this.id !== bill.id) {
-        this.counter = 0
+      this.counter = 0
     }
-    if (this.id === undefined || this.id !== bill.id) 
-    {
+    if (this.id === undefined || this.id !== bill.id) {
       this.id = bill.id
     }
     if (this.counter % 2 === 0) {
@@ -105,7 +106,7 @@ export default class {
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
-      this.counter ++
+      this.counter++
     } else {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
@@ -113,7 +114,7 @@ export default class {
         <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
       `)
       $('.vertical-navbar').css({ height: '120vh' })
-      this.counter ++
+      this.counter++
     }
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
@@ -127,7 +128,7 @@ export default class {
       commentAdmin: $('#commentary2').val()
     }
     this.updateBill(newBill)
-    this.onNavigate(ROUTES_PATH['Dashboard'])
+    this.onNavigate(ROUTES_PATH.Dashboard)
   }
 
   handleRefuseSubmit = (e, bill) => {
@@ -137,22 +138,22 @@ export default class {
       commentAdmin: $('#commentary2').val()
     }
     this.updateBill(newBill)
-    this.onNavigate(ROUTES_PATH['Dashboard'])
+    this.onNavigate(ROUTES_PATH.Dashboard)
   }
 
-  handleShowTickets(e, bills, index) {
+  handleShowTickets (e, bills, index) {
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0) {
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
+      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)' })
       $(`#status-bills-container${this.index}`)
         .html(cards(filteredBills(bills, getStatus(this.index))))
-      this.counter ++
+      this.counter++
     } else {
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
+      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)' })
       $(`#status-bills-container${this.index}`)
-        .html("")
-      this.counter ++
+        .html('')
+      this.counter++
     }
 
     bills.forEach(bill => {
@@ -163,27 +164,26 @@ export default class {
     })
 
     return bills
-
   }
 
   getBillsAllUsers = () => {
     if (this.store) {
       return this.store
-      .bills()
-      .list()
-      .then(snapshot => {
-        const bills = snapshot
-        .map(doc => ({
-          id: doc.id,
-          ...doc,
-          date: doc.date,
-          status: doc.status
-        }))
-        return bills
-      })
-      .catch(error => {
-        throw error;
-      })
+        .bills()
+        .list()
+        .then(snapshot => {
+          const bills = snapshot
+            .map(doc => ({
+              id: doc.id,
+              ...doc,
+              date: doc.date,
+              status: doc.status
+            }))
+          return bills
+        })
+        .catch(error => {
+          throw error
+        })
     }
   }
 
@@ -191,11 +191,11 @@ export default class {
   /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.store) {
-    return this.store
-      .bills()
-      .update({data: JSON.stringify(bill), selector: bill.id})
-      .then(bill => bill)
-      .catch(console.log)
+      return this.store
+        .bills()
+        .update({ data: JSON.stringify(bill), selector: bill.id })
+        .then(bill => bill)
+        .catch(console.log)
     }
   }
 }
