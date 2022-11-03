@@ -24,6 +24,7 @@ import NewBillUI from "../views/NewBillUI.js"
 
 // setup 
 jest.mock("../app/store", () => mockStore)
+// spyOn sur les fonctions sous jacentes
 $.fn.modal = jest.fn();
 
 describe("Given I am connected as an employee", () => {
@@ -78,13 +79,6 @@ describe("Given I am connected as an employee", () => {
       })
 
       test("Then bills data should be displayed on the Bills page", async () => {
-        mockStore.bills.mockImplementationOnce(() => {
-          return {
-            list : () =>  {
-                return Promise.resolve()
-            }
-          }
-        })
         expect(screen.getByTestId("tbody")).toBeTruthy()
       })
     })

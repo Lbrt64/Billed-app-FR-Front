@@ -95,7 +95,7 @@ describe("Given that I am a user on login page", () => {
       });
 
       const handleSubmit = jest.fn(login.handleSubmitEmployee);
-      login.login = jest.fn().mockResolvedValue({});
+      login.login = jest.fn().mockResolvedValue(new Error("Erreur"));
       form.addEventListener("submit", handleSubmit);
       fireEvent.submit(form);
       expect(handleSubmit).toHaveBeenCalled();
@@ -110,7 +110,6 @@ describe("Given that I am a user on login page", () => {
         })
       );
     });
-
     test("It should renders Bills page", () => {
       expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
     });
@@ -207,7 +206,7 @@ describe("Given that I am a user on login page", () => {
       });
 
       const handleSubmit = jest.fn(login.handleSubmitAdmin);
-      login.login = jest.fn().mockResolvedValue({});
+      login.login = jest.fn().mockResolvedValue(new Error("Erreur"));
       form.addEventListener("submit", handleSubmit);
       fireEvent.submit(form);
       expect(handleSubmit).toHaveBeenCalled();

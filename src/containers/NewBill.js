@@ -26,28 +26,25 @@ export default class NewBill {
     const email = JSON.parse(localStorage.getItem("user")).email
     // [Bug Hunt] - Bills
     // Only accept jpg, jpeg and png
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('email', email)
+    this.store.bills()
+    .create({
+      data: formData,
+      headers: {
+        noContentType: true
+      }
+    })
+    .then(({fileUrl, key}) => {
+      console.log(fileUrl)
+      this.billId = key
+      this.fileUrl = fileUrl
+      this.fileName = fileName
+    }).catch(error => console.error(error))
     if (!isImage(fileName)) {
-      alert('Format de fichier non accepté, utiliser .jpg, .jpeg ou .png')
+        alert('Format de fichier non accepté, utiliser .jpg, .jpeg ou .png')
       this.document.querySelector(`input[data-testid="file"]`).value = '';
-      return
-    } else {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('email', email)
-      this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({fileUrl, key}) => {
-        console.log(fileUrl)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      }).catch(error => console.error(error))
     }
   }
 
