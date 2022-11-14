@@ -73,7 +73,7 @@ describe('Given I am connected as an employee', () => {
       })
 
       test('Then no file name should appear when the format is wrong', async () => {
-        const file = new File(['image.jpg'], 'image.jpg')
+        const file = new File(['doc.pdf'], 'doc.pdf')
         const input = screen.getByTestId('file')
         userEvent.upload(input, file)
         expect(file.value).toBe(undefined)

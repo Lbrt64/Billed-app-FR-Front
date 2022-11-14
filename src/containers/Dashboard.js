@@ -158,9 +158,16 @@ export default class {
 
     bills.forEach(bill => {
       // [Bug Hunt] - Dashboard
+
+      // DEMO - UNCOMMENT THIS - check lines 107 & 113
+      // $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      // DEMO - UNCOMMENT THIS
+
+      // DEMO - COMMENT THIS
       // Avoid stacking of event listeners
       $(`#open-bill${bill.id}`).unbind()
       $(`#open-bill${bill.id}`).on('click', (e) => this.handleEditTicket(e, bill, bills))
+      // DEMO - COMMENT THIS
     })
 
     return bills

@@ -43,9 +43,11 @@ describe('Given I am connected as an employee', () => {
 
     test('Then bill icon in vertical layout should be highlighted', () => {
       const windowIcon = screen.getByTestId('icon-window')
+      // view/Bills test
       expect(windowIcon.classList.contains('active-icon')).toBe(true)
     })
 
+    // [Bug report] - Bills
     test('Then bills should be ordered from earliest to latest', () => {
       const orderedBills = bills.sort(function (a, b) { return new Date(a.date) - new Date(b.date) })
       expect(orderedBills).toEqual(chronoOrderedBills)
